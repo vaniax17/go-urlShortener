@@ -92,6 +92,11 @@ func mustEnv(l *zap.Logger) {
 		panic("DB_OPORT must be set")
 	}
 
+	if os.Getenv("JWT_SECRET") == "" {
+		l.Error("JWT_SECRET is not set", zap.Error(errors.New("JWT_SECRET is not set")))
+		panic("JWT_SECRET must be set")
+	}
+
 }
 
 func buildDSN() string {
