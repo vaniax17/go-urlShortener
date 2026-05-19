@@ -1,6 +1,8 @@
 package domain
 
+import "context"
+
 type UserRepository interface {
-	Create(username, password string) (string, error)
-	Login(username, password string) (string, error)
+	Create(ctx context.Context, u *User) (*UserResponse, error)
+	Login(ctx context.Context, u *User) (*User, error)
 }

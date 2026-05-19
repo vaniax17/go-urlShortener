@@ -6,8 +6,6 @@ type UserRequest struct {
 }
 
 type UserResponse struct {
-	Id           uint64
-	Username     string
-	AccessToken  string
-	RefreshToken string
+	Id       int64
+	Username string
 }

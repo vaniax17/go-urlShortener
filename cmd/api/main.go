@@ -9,6 +9,8 @@ import (
 	"github.com/labstack/echo/v5"
 	"github.com/labstack/echo/v5/middleware"
 	"github.com/vaniax17/go-urlShortener/internal/repository/postgres"
+	"github.com/vaniax17/go-urlShortener/internal/service"
+	"github.com/vaniax17/go-urlShortener/internal/transport/http/handler"
 	"github.com/vaniax17/go-urlShortener/pkg/logger"
 	"go.uber.org/zap"
 )
@@ -42,6 +44,12 @@ func main() {
 	}()
 
 	db := postgres.New(buildDSN())
+	userRepo := postgres.NewUserRepository(db)
+	userSvc := service.NewUserService(userRepo)
+	userHandler := handler.NewUserHandler(userSvc)
+
+	api := e.Group("/api")
+	api.POST("/create", userHandler.CreateUser)
 
 	defer func() {
 		err := db.Close()

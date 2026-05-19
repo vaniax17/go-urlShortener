@@ -7,7 +7,7 @@ import (
 )
 
 type DB struct {
-	DB *gorm.DB
+	*gorm.DB
 }
 
 func New(dsn string) *DB {
@@ -19,7 +19,13 @@ func New(dsn string) *DB {
 	l := logger.Get()
 	l.Info("database connection established")
 
-	return &DB{DB: db}
+	err = db.AutoMigrate(&User{})
+	if err != nil {
+		l.Error("database migration failed")
+		return nil
+	}
+
+	return &DB{db}
 }
 
 func (d *DB) Close() error {
