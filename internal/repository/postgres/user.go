@@ -38,7 +38,7 @@ func (r userRepo) Create(ctx context.Context, u *domain.User) (*domain.UserRespo
 
 func (r userRepo) Login(ctx context.Context, u *domain.User) (*domain.User, error) {
 	user := User{}
-	if err := r.DB.WithContext(ctx).First(&user, "id = ?", u.Username).Error; err != nil {
+	if err := r.DB.WithContext(ctx).First(&user, "username = ?", u.Username).Error; err != nil {
 		return nil, err
 	}
 
