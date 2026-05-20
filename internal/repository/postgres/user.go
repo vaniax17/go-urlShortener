@@ -43,6 +43,7 @@ func (r userRepo) Login(ctx context.Context, u *domain.User) (*domain.User, erro
 	}
 
 	u.Password = user.Password
+	u.Id = user.Id
 
 	return u, nil
 }

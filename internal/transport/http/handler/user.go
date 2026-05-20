@@ -37,6 +37,31 @@ func (u *UserHandler) CreateUser(c *echo.Context) error {
 		return handleError(err)
 	}
 
+	setCookieAuthCookie(c, tokenPair)
+	return c.JSON(http.StatusCreated, userResponse{
+		Id:       user.Id,
+		Username: user.Username,
+	})
+
+}
+
+func (u *UserHandler) LoginUser(c *echo.Context) error {
+	var req userRequest
+	if err := c.Bind(&req); err != nil {
+		return echo.NewHTTPError(http.StatusBadRequest, "invalid json body")
+	}
+
+	ctx := c.Request().Context()
+	user, tokenPair, err := u.userService.Login(ctx, req.Username, req.Base64EncodedPassword)
+	if err != nil {
+		return handleError(err)
+	}
+
+	setCookieAuthCookie(c, tokenPair)
+	return c.JSON(http.StatusCreated, user)
+}
+
+func setCookieAuthCookie(c *echo.Context, tokenPair *domain.TokenPair) {
 	c.SetCookie(&http.Cookie{
 		Name:     "access_token",
 		Value:    tokenPair.AccessToken,
@@ -54,10 +79,4 @@ func (u *UserHandler) CreateUser(c *echo.Context) error {
 		HttpOnly: true,
 		MaxAge:   86400 * 7, // 86400 = 24hours
 	})
-
-	return c.JSON(http.StatusCreated, userResponse{
-		Id:       user.Id,
-		Username: user.Username,
-	})
-
 }

@@ -50,6 +50,7 @@ func main() {
 
 	api := e.Group("/api")
 	api.POST("/create", userHandler.CreateUser)
+	api.POST("/login", userHandler.LoginUser)
 
 	defer func() {
 		err := db.Close()
